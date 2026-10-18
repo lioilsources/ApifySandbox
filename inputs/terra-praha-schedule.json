@@ -1,0 +1,11 @@
+{
+  "name": "terra-praha-rent-daily",
+  "cronExpression": "10 6 * * *",
+  "timezone": "Europe/Prague",
+  "isEnabled": true,
+  "isExclusive": true,
+  "description": "TerraReality V4: daily Praha rentals (onlyNew), pulled by terra-ingest on JODA at 06:40",
+  "actions": [
+    { "type": "RUN_ACTOR_TASK", "actorTaskId": "mEdAEfC1LaEfK94Rm" }
+  ]
+}

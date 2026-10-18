@@ -183,3 +183,10 @@ Formát: `## YYYY-MM-DD — téma`, pod tím fakta. Odhad ceny vždy **před** r
 - [ ] Fáze 1: odhad ceny Google Maps runu (`inputs/maps-leads.json`, 7 dotazů × 5 míst = 35) → schválit → `apify-run` → `leads-normalize`.
 - [ ] Fáze 1b: `fetch-actor-details` 4 Actorů, odhad denní ceny, smoke run, Standby vs. batch.
 - [ ] Fáze 2: výběr Reddit + Play/App Store Actorů, schedule a webhook. Nasazení na JODU jen po OK od Directoru, cloudflared hostname po OK od uživatele.
+
+## 2026-10-18 — Fáze 1b: Apify schedule založený
+
+- Uživatel založil schedule `terra-praha-rent-daily` (ID `evrFu0bH4tqrW0rVC`) sám přes `curl` na `POST /v2/schedules`. Classifier v Claude Code to předtím dvakrát zablokoval jako trvalou perzistenci.
+- Definice je v `inputs/terra-praha-schedule.json`. Původně se nezapsala, protože ji blokace odnesla spolu s POSTem, a první pokus uživatele skončil chybou curl „error encountered when reading a file“.
+- Cron je `10 6 * * *` Europe/Prague, schedule je exclusive. API vrací `nextRunAt` v UTC (`2026-10-19T04:10:00Z`, tedy 6:10 SELČ). Pull na JODĚ běží v 6:40, rezerva 30 min na run, který trvá pár sekund.
+- Pipeline je kompletní: Apify schedule → task (cap $0.15) → dataset ← `terra-ingest.timer` na JODĚ (REST pull, idempotentní podle run ID).
