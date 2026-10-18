@@ -18,7 +18,7 @@ Plán: `Prompts/00-APIFY_PLAN.md`. Log zjištění (zdroj pro cover letter): `ap
 | token | `.env` (chmod 600) v deploy adresáři stroje, kde běží handler. Nikdy ne git, logy, FINDINGS, zprávy |
 | REST klient Go | `pkg/apifyrest` (oficiální Go klient neexistuje) |
 | webhook handler | JODA, `127.0.0.1:8098`, `POST /apify/webhook`, `GET /healthz`. Veřejně přes nový cloudflared hostname (schvaluje uživatel) |
-| LLM dávky | SPARK `http://192.168.88.66:8080/v1`, model `openclaw-default`, jen 13–07. Fronta `data/monitor/queue.jsonl` |
+| LLM dávky | SPARK (OpenAI-compatible endpoint v LAN, URL v `.env`), model `openclaw-default`, jen 13–07. Fronta `data/monitor/queue.jsonl` |
 | Telegram | `ssh spark ~/deploy/WorldLibraryProject/deploy/spark/notify.sh "<html>"`, jen notifikace bez HITL tlačítek |
 | ComfyUI | nesouvisí, nic se tam neposílá |
 | FINDINGS | `apify/FINDINGS.md`, append-only |
