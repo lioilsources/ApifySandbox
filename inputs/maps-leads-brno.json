@@ -1,0 +1,11 @@
+{
+  "searchStringsArray": ["reklamní agentura", "marketingová agentura", "herní studio", "e-shop", "stavební firma", "montážní firma", "úklidová firma"],
+  "locationQuery": "Brno, Czechia",
+  "maxCrawledPlacesPerSearch": 3,
+  "language": "cs",
+  "scrapeContacts": true,
+  "skipClosedPlaces": false,
+  "maxImages": 0,
+  "maxReviews": 0,
+  "scrapeReviewsPersonalData": false
+}

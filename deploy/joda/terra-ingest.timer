@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily TerraReality ingest, 30 min after the Apify schedule (06:10)
+
+[Timer]
+OnCalendar=*-*-* 06:40:00
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

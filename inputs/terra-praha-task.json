@@ -1,0 +1,18 @@
+{
+  "actId": "nice_dev/sreality-listings-scraper",
+  "name": "terra-praha-rent-daily",
+  "title": "TerraReality: Praha pronájem bytů, denně jen nové",
+  "options": { "memoryMbytes": 512, "timeoutSecs": 600, "maxTotalChargeUsd": 0.15 },
+  "input": {
+    "location": "Praha",
+    "transactions": ["pronajem"],
+    "propertyTypes": ["byty"],
+    "maxItems": 120,
+    "sortBy": "NEWEST",
+    "onlyNew": true,
+    "stateKey": "terra-praha-rent",
+    "extractDetails": false,
+    "privateSellerContacts": false,
+    "language": "cs"
+  }
+}

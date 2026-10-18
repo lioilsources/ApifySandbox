@@ -1,0 +1,15 @@
+{
+  "title": "Czech Public Contracts Scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "ico": { "title": "IČO", "type": "array", "editor": "stringList", "description": "IČO of the publishing authority or of any counterparty. Leading zeros optional.", "prefill": ["00064581"] },
+    "name": { "title": "Party name contains", "type": "string", "editor": "textfield", "description": "Case-insensitive substring of the authority or a counterparty name." },
+    "keywords": { "title": "Subject keywords", "type": "array", "editor": "stringList", "description": "Contract subject must contain at least one (case-insensitive), e.g. 'kampaň', 'software', 'tablet'.", "prefill": ["kampaň"] },
+    "dateFrom": { "title": "Published from", "type": "string", "editor": "datepicker", "description": "YYYY-MM-DD. Default: 30 days before 'Published to'. Registry starts 2016-07-01." },
+    "dateTo": { "title": "Published to", "type": "string", "editor": "datepicker", "description": "YYYY-MM-DD. Default: today." },
+    "minValueCzk": { "title": "Minimum value (CZK, excl. VAT)", "type": "integer", "editor": "number", "minimum": 0 },
+    "onlyValid": { "title": "Only valid records", "type": "boolean", "default": true, "description": "Skip records the authority has invalidated." },
+    "limit": { "title": "Max contracts", "type": "integer", "editor": "number", "minimum": 1, "maximum": 100000, "default": 100, "description": "You pay per contract returned; the run stops at this number." }
+  }
+}

@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+data/
+raw/
+storage/
+bin/
+.DS_Store
+leads/apify/

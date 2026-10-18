@@ -1,0 +1,42 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "source": { "type": "string" },
+      "contractId": { "type": "string" },
+      "versionId": { "type": "integer" },
+      "url": { "type": "string" },
+      "valid": { "type": "boolean" },
+      "publishedAt": { "type": "string" },
+      "signedAt": { "type": "string" },
+      "subject": { "type": "string" },
+      "value": { "type": ["number", "null"] },
+      "currency": { "type": "string" },
+      "valueCzk": { "type": ["number", "null"] },
+      "authority": { "type": "object", "properties": { "ico": { "type": "string" }, "name": { "type": "string" } } },
+      "supplier": { "type": ["object", "null"], "properties": { "ico": { "type": "string" }, "name": { "type": "string" } } },
+      "supplierRoleReversed": { "type": "boolean" },
+      "parties": { "type": "array", "items": { "type": "object" } },
+      "attachments": { "type": "array", "items": { "type": "string" } }
+    },
+    "required": ["source", "contractId", "url", "subject", "authority"]
+  },
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": { "fields": ["publishedAt", "authority", "supplier", "subject", "valueCzk", "url"] },
+      "display": {
+        "component": "table",
+        "properties": {
+          "publishedAt": { "label": "Published", "format": "date" },
+          "authority": { "label": "Authority", "format": "object" },
+          "supplier": { "label": "Supplier", "format": "object" },
+          "subject": { "label": "Subject", "format": "text" },
+          "valueCzk": { "label": "Value CZK", "format": "number" },
+          "url": { "label": "Registry", "format": "link" }
+        }
+      }
+    }
+  }
+}

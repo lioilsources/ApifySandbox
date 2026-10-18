@@ -1,0 +1,15 @@
+{
+  "actorSpecification": 1,
+  "name": "czech-public-contracts",
+  "title": "Czech Public Contracts Scraper",
+  "description": "Search the Czech contract registry (Registr smluv) by IČO, party name, subject keywords and date. Facts only, private persons removed. Batch dataset, Standby HTTP API and MCP endpoint.",
+  "version": "0.1",
+  "buildTag": "latest",
+  "dockerfile": "../Dockerfile",
+  "input": "./input_schema.json",
+  "storages": { "dataset": "./dataset_schema.json" },
+  "usesStandbyMode": true,
+  "webServerMcpPath": "/mcp",
+  "minMemoryMbytes": 256,
+  "maxMemoryMbytes": 1024
+}

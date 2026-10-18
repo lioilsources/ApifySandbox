@@ -1,0 +1,13 @@
+[Unit]
+Description=TerraReality: ingest last Apify run of terra-praha-rent-daily (Sreality, Praha)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/deploy/ApifySandbox
+EnvironmentFile=%h/deploy/ApifySandbox/.env
+ExecStart=%h/deploy/ApifySandbox/bin/terra-ingest -state data/terra/state.json -task nice_dev/sreality-listings-scraper=mEdAEfC1LaEfK94Rm
+MemoryMax=128M
+Nice=10
+TimeoutStartSec=5min
