@@ -190,3 +190,20 @@ Formát: `## YYYY-MM-DD — téma`, pod tím fakta. Odhad ceny vždy **před** r
 - Definice je v `inputs/terra-praha-schedule.json`. Původně se nezapsala, protože ji blokace odnesla spolu s POSTem, a první pokus uživatele skončil chybou curl „error encountered when reading a file“.
 - Cron je `10 6 * * *` Europe/Prague, schedule je exclusive. API vrací `nextRunAt` v UTC (`2026-10-19T04:10:00Z`, tedy 6:10 SELČ). Pull na JODĚ běží v 6:40, rezerva 30 min na run, který trvá pár sekund.
 - Pipeline je kompletní: Apify schedule → task (cap $0.15) → dataset ← `terra-ingest.timer` na JODĚ (REST pull, idempotentní podle run ID).
+
+## 2026-10-19 — Re-check nekonzistence MCP vs. REST před založením issue
+
+- `fetch-actor-details` pro `pringlesbitch/cz-reality-aggregator` dnes vrací **správně**: `PAY_PER_EVENT`, $0.002/inzerát, `userTier: FREE`, popis i vývojář vyplněné. Nález ze 17. 10. (`pricing.model: FREE`, prázdný popis) **už neplatí**. Mezi 14. a 16. 10. vyšly verze MCP serveru 0.18.2–0.18.4, ale 17. 10. jsme už běželi proti hostovanému serveru, takže příčina mohla být i v cache metadat na straně Store. Issue proto nezakládám; v cover letteru změnit na „already fixed by the time I checked again“.
+- Kontrola na dalších dvou Actorech s tiered pricingem (`nice_dev/sreality-listings-scraper`, `compass/crawler-google-places`): MCP vrací `tieredPricing` po tierech a souhlasí s REST `eventTieredPricingUsd`. `outputSchema` je `{}` jen u aggregatoru (12 uživatelů celkem), protože se odvozuje z nedávných runů; to není chyba.
+- Upřesnění k 17. 10.: REST `eventPriceUsd` je `null` **jen u tiered událostí** (compass, nice_dev); aggregator má plochou cenu a `eventPriceUsd: 0.002` vyplněné. Klient tedy musí číst obě pole.
+- Drobnost: MCP vrací u `compass/crawler-google-places` `description: ""`, REST má popis o 284 znacích. Neškodné, ale je to další místo, kde MCP a REST nesouhlasí.
+- Duplicity v `apify/apify-mcp-server`: #905 „MCP Apps shows different Pricing info than the public Actor page“ (otevřené od 05/2026, bez komentářů, týká se widgetu) a #1543 „Gate pricing hints on fetch-actor-details availability“. Kdyby se chyba vrátila, patří repro jako komentář k #905, ne nové issue.
+- `apify/apify-claude-code-plugin` má issues zapnuté a **žádné založené**, takže nález „subagent `apify` nedostane MCP nástroje z OAuth“ by byl první. Re-check viz další záznam.
+
+## 2026-10-19 — Re-check: subagent `apify` z pluginu nemá MCP nástroje (platí)
+
+- Repro dnes: subagent `apify` (plugin `apify@apify` 1.0.2, Claude Code 2.1.303) hlásí, že má jen `Read`, `Bash` a hand-back; žádný `mcp__*` nástroj, takže `search-actors` nemůže zavolat. V hlavní session jsou nástroje po OAuth dostupné jako `mcp__plugin_apify_apify__search-actors` atd.
+- Pravděpodobná příčina: `agents/apify.md` má `tools: [Read, Glob, Grep, Bash, mcp__apify]`. Plugin MCP servery jsou v Claude Code namespacované jako `mcp__plugin_<plugin>_<server>__<tool>`, takže `mcp__apify` odpovídá jen uživatelsky nakonfigurovanému serveru jménem `apify`, ne tomu z pluginu (`.mcp.json` pluginu: server `apify`, `https://mcp.apify.com/?client=claude+code+plugin`). Pro plugin by to musel být `mcp__plugin_apify_apify`.
+- Důsledek: doporučená cesta z README („vždy jít přes agenta apify“) po OAuth nefunguje; agent spadne na „Route 1 přes Apify CLI“, které není nainstalované. Hlavní session musí volat MCP sama.
+- Repo `apify/apify-claude-code-plugin` má issues zapnuté a prázdné; návrh issue je připravený, založení schvaluje uživatel.
+- Založeno jako [apify/apify-claude-code-plugin#27](https://github.com/apify/apify-claude-code-plugin/issues/27) (2026-10-19).

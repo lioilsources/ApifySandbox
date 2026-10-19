@@ -28,3 +28,10 @@ deploy-joda: terra-ingest-joda
 	scp bin/linux-amd64/terra-ingest joda:deploy/ApifySandbox/bin/terra-ingest
 	scp deploy/joda/terra-ingest.service deploy/joda/terra-ingest.timer joda:.config/systemd/user/
 	ssh joda 'systemctl --user daemon-reload && systemctl --user enable --now terra-ingest.timer'
+
+## tradebot (Prompts/01-TRADING_BOT_PLAN.md)
+tradebot-data: ## backfill Binance history and append Kraken days (free, keyless)
+	go run ./cmd/tradebot-data -backfill -update
+
+tradebot-backtest: ## variant A on stored candles, equity curve to data/tradebot
+	go run ./cmd/tradebot-backtest -equity data/tradebot/equity_A.csv
