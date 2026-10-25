@@ -13,7 +13,7 @@
       "buildings": { "type": "array" },
       "text": { "type": "string" },
       "point": { "type": ["object", "null"] },
-      "building": { "type": ["object", "null"] },
+      "building": { "type": ["boolean", "object", "null"], "description": "parcel: true = stavební parcela; address: the building object" },
       "protectedAreas": { "type": "array" },
       "links": { "type": "object" }
     },

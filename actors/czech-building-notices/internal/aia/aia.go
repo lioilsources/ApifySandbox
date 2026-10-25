@@ -12,7 +12,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"sync"
 	"time"
 )
@@ -24,9 +26,16 @@ type fetcher struct {
 }
 
 // Client returns an http.Client with AIA chasing and the given timeout.
-func Client(timeout time.Duration) *http.Client {
+// Connecting is capped at 10 s: unreachable hosts must not hold a worker for
+// the whole request timeout. proxy may be nil.
+func Client(timeout time.Duration, proxy *url.URL) *http.Client {
 	f := &fetcher{hc: &http.Client{Timeout: 10 * time.Second}, cache: map[string]*x509.Certificate{}}
 	tr := http.DefaultTransport.(*http.Transport).Clone()
+	tr.DialContext = (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext
+	tr.TLSHandshakeTimeout = 10 * time.Second
+	if proxy != nil {
+		tr.Proxy = http.ProxyURL(proxy)
+	}
 	tr.TLSClientConfig = &tls.Config{
 		InsecureSkipVerify: true, // replaced by VerifyConnection below, which always verifies
 		VerifyConnection:   f.verify,

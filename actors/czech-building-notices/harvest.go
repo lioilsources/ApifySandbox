@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"sort"
@@ -32,6 +34,7 @@ type boardState struct {
 	Notices   int       `json:"notices"`
 	Err       string    `json:"err,omitempty"`
 	Unchanged bool      `json:"unchanged,omitempty"`
+	ViaProxy  bool      `json:"viaProxy,omitempty"`
 }
 
 type state struct {
@@ -41,6 +44,7 @@ type state struct {
 
 type harvester struct {
 	hc  *http.Client
+	phc *http.Client // via Apify Proxy (CZ) for boards that refuse foreign IPs; nil = off
 	ua  string
 	reg *ruian.Registry
 	off *offices.Resolver
@@ -52,7 +56,7 @@ type harvester struct {
 }
 
 func newHarvester(a *actor.Actor, reg *ruian.Registry, ua string) *harvester {
-	hc := aia.Client(60 * time.Second)
+	hc := aia.Client(60*time.Second, nil)
 	return &harvester{hc: hc, ua: ua, reg: reg, off: offices.New(hc, ua), act: a,
 		st: state{Boards: map[string]*boardState{}, Seen: map[string]time.Time{}}, byBoard: map[string][]*Notice{}}
 }
@@ -240,6 +244,12 @@ func (h *harvester) harvestBoard(ctx context.Context, b desky.Board, hostSem map
 		}
 	}
 	body, newETag, newLM, notMod, err := desky.Fetch(ctx, h.hc, h.ua, b.URL, etag, lastMod)
+	if err != nil && h.phc != nil && isConnectErr(err) {
+		// Many municipal sites (one hosting in 78.156.158.0/24 alone hosts ~40)
+		// drop connections from foreign data-centre IPs; retry through a Czech exit.
+		body, newETag, newLM, notMod, err = desky.Fetch(ctx, h.phc, h.ua, b.URL, etag, lastMod)
+		bs.ViaProxy = err == nil
+	}
 	var ns []*Notice
 	switch {
 	case err != nil:
@@ -283,6 +293,35 @@ func (h *harvester) harvestBoard(ctx context.Context, b desky.Board, hostSem map
 	h.st.Boards[b.URL] = &bs
 	h.mu.Unlock()
 	return ns, bs
+}
+
+// isConnectErr is a TCP connect/TLS handshake timeout or refusal, i.e. the
+// server never answered — the case where a Czech proxy exit helps.
+func isConnectErr(err error) bool {
+	var ne net.Error
+	var oe *net.OpError
+	if errors.As(err, &oe) && oe.Op == "dial" {
+		return true
+	}
+	return errors.As(err, &ne) && ne.Timeout() && strings.Contains(err.Error(), "dial")
+}
+
+// enableProxy routes failed boards through Apify Proxy; groups e.g.
+// "RESIDENTIAL" (paid per GB) or "" for the plan's datacenter pool.
+func (h *harvester) enableProxy(password, groups, country string) {
+	user := "auto"
+	var parts []string
+	if groups != "" {
+		parts = append(parts, "groups-"+groups)
+	}
+	if country != "" {
+		parts = append(parts, "country-"+country)
+	}
+	if len(parts) > 0 {
+		user = strings.Join(parts, ",")
+	}
+	u := &url.URL{Scheme: "http", User: url.UserPassword(user, password), Host: "proxy.apify.com:8000"}
+	h.phc = aia.Client(90*time.Second, u)
 }
 
 // resolve looks the notice's parcel references up in RÚIAN (budget = max

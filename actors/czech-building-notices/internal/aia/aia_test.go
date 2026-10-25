@@ -10,7 +10,7 @@ import (
 // edeska.brno.cz sent no intermediate on 2026-10-25; must work, and a
 // wrong host name must still fail.
 func TestIncompleteChain(t *testing.T) {
-	hc := Client(30 * time.Second)
+	hc := Client(30*time.Second, nil)
 	resp, err := hc.Head("https://edeska.brno.cz/eDeska/opendata")
 	if err != nil {
 		t.Fatal(err)

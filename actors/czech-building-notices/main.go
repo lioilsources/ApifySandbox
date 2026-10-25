@@ -54,6 +54,11 @@ func main() {
 		if d, err := time.ParseDuration(os.Getenv("HARVEST_INTERVAL")); err == nil && d >= 15*time.Minute {
 			every = d
 		}
+		// Standby has no input: PROXY_COUNTRY (e.g. CZ) and optional PROXY_GROUPS in Actor env vars.
+		if c, pw := os.Getenv("PROXY_COUNTRY"), os.Getenv("APIFY_PROXY_PASSWORD"); c != "" && pw != "" {
+			s.h.enableProxy(pw, os.Getenv("PROXY_GROUPS"), c)
+			log.Printf("proxy: unreachable boards retried via Apify Proxy (%q, %s)", os.Getenv("PROXY_GROUPS"), c)
+		}
 		go s.keepIndex(ctx, every)
 		serve(ctx, a, s)
 		return
@@ -75,6 +80,11 @@ type input struct {
 	Limit            int    `json:"limit"`
 	MaxBoards        int    `json:"maxBoards"` // testing: harvest only the first N boards
 	StateKey         string `json:"stateKey"`  // separate onlyNew state per schedule/filter
+	Proxy            struct {
+		UseApifyProxy     bool     `json:"useApifyProxy"`
+		ApifyProxyGroups  []string `json:"apifyProxyGroups"`
+		ApifyProxyCountry string   `json:"apifyProxyCountry"`
+	} `json:"proxyConfiguration"`
 }
 
 func runBatch(ctx context.Context, a *actor.Actor, s *service) error {
@@ -96,6 +106,18 @@ func runBatch(ctx context.Context, a *actor.Actor, s *service) error {
 		budget = 1000
 	}
 	resolve := in.ResolveParcels == nil || *in.ResolveParcels
+	if in.Proxy.UseApifyProxy {
+		pw := os.Getenv("APIFY_PROXY_PASSWORD")
+		if pw == "" {
+			return fmt.Errorf("proxyConfiguration.useApifyProxy needs APIFY_PROXY_PASSWORD (set on the Apify platform)")
+		}
+		country := in.Proxy.ApifyProxyCountry
+		if country == "" {
+			country = "CZ"
+		}
+		s.h.enableProxy(pw, strings.Join(in.Proxy.ApifyProxyGroups, "+"), country)
+		log.Printf("proxy: boards that refuse the connection are retried via Apify Proxy (%v, %s)", in.Proxy.ApifyProxyGroups, country)
+	}
 	store, err := s.h.loadState(ctx, in.StateKey)
 	if err != nil {
 		return fmt.Errorf("state store: %w", err)

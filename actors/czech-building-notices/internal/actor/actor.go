@@ -170,12 +170,14 @@ func (a *Actor) Flush(ctx context.Context) error {
 	for attempt := 0; ; attempt++ {
 		resp, err := a.api(ctx, http.MethodPost, "/datasets/"+a.Env.DatasetID+"/items", b)
 		if err == nil {
+			msg, _ := io.ReadAll(io.LimitReader(resp.Body, 2048))
 			resp.Body.Close()
 			if resp.StatusCode/100 == 2 {
 				a.written += len(items)
 				return nil
 			}
-			err = fmt.Errorf("push: HTTP %d", resp.StatusCode)
+			// 400 schema-validation-error lists the offending fields; keep it in the log
+			err = fmt.Errorf("push: HTTP %d: %s", resp.StatusCode, msg)
 			if resp.StatusCode < 500 && resp.StatusCode != 429 {
 				return err
 			}
