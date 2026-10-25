@@ -340,8 +340,11 @@ Actor ve Store, který by **šířil** údaje katastru třetím osobám, naráž
   individuálním souhlasem/smlouvou s ČÚZK.
 - Co jde: **RÚIAN Actor** – parcela/adresa → k.ú., výměra, druh pozemku, geometrie,
   obec, ORP, stavební úřad. To je přesně doplněk pro Actor B (`parcely[]` →
-  normalizace a geolokace) a nevyžaduje nic od ČÚZK. Rozsah 2 dny. Zařadit jako
-  volitelný modul B, ne jako samostatný produkt.
+  normalizace a geolokace) a nevyžaduje nic od ČÚZK.
+  **Aktualizace 2026-10-25:** po diskusi s uživatelem povýšeno na samostatný
+  **Actor D „RÚIAN Parcel & Address MCP"** (3–4 dny), protože žádný existující
+  wrapper nad RÚIAN není použitelný z LLM agenta. Detailní plán D i B nad RÚIAN:
+  `Prompts/03-RUIAN_ACTORS_PLAN.md`.
 
 ### 5.4 RÚIAN podrobně (ověřeno 2026-10-24)
 
