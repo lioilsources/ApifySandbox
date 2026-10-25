@@ -212,3 +212,20 @@ Formát: `## YYYY-MM-DD — téma`, pod tím fakta. Odhad ceny vždy **před** r
 
 - Řetězec schedule → task → dataset → JODA proběhl bez zásahu: run tasku v 06:10 CEST (API: 04:10 UTC) za $0.0928, `terra-ingest.timer` v 06:41 stáhl 120 nových inzerátů, 0 přeskočených, stav 240 inzerátů / 224 KB. Odhad ~$2.8/měsíc drží.
 - Token prošel chatem (uživatel vložil výstup `cat .env`), proto rotace: nový token v konzoli, do `.env` lokálně i na JODĚ přes `pbpaste` a ssh stdin s `umask 077`, ověřeno `GET /v2/users/me` z obou strojů. Starý token uživatel zneplatnil. Poučení pro postupy: ani „ukaž mi token“ se nemá řešit výpisem do terminálu, který se pak vkládá do chatu; stačí odkaz na konzoli.
+
+## 2026-10-25 — RÚIAN Actory D a B: první nasazení a běhy na Apify
+
+- Bez Apify CLI: Actory založené přes `POST /v2/acts` se zdrojem `GIT_REPO` a URL `https://github.com/lioilsources/apifysandbox#master:actors/<složka>` (větev + podsložka monorepa funguje, build klonuje veřejné repo). Build stojí 0,04–0,05 CU. Go balíček sdílený mezi Actory musí být vendorovaný, protože build vidí jen podsložku.
+- `pricingInfos` (pay-per-event) při založení vrací `operation-not-allowed`, při update `cannot-monetize-without-payout-billing-info`: ceny jdou nastavit až po vyplnění výplatních a fakturačních údajů v konzoli (uživatel).
+- Validace vstupního schématu při buildu: **každé pole musí mít `description`**, jinak build selže („Field schema.properties.X.description is required").
+- Dataset se schématem (`storages.dataset`) **validuje položky při zápisu**: nesoulad typu vrací `400 schema-validation-error` s cestou k poli. Vlastní Go runtime musí logovat tělo odpovědi, jinak je v logu jen „HTTP 400" (doplněno).
+- Ceny běhů (FREE plán):
+
+| Běh | Čas | CU | USD | RAM max |
+|---|---|---|---|---|
+| D batch (5 dotazů) | 7 s | 0,0003 | 0,0001 | 18 MB |
+| B batch, celá sklizeň 266 desek | 317–450 s | 0,022–0,031 | 0,004–0,006 | 71–93 MB |
+
+- Standby + MCP (`https://<user>--<actor>.apify.actor/mcp`, `Authorization: Bearer`) funguje; studený start D ~1 s, gazetteer RÚIAN se načte do ~10 s, do té doby nástroje vrací srozumitelné `isError`.
+- **Geoblokace z datacentra Apify:** z 266 úředních desek se z Apify nepřipojí ~90 (lokálně z ČR jen ~30 chyb), z toho 41 na jednom hostingu `78.156.158.0/24`. Sklizeň se tím natahuje (opraveno: 10 s timeout na spojení).
+- Apify Proxy na FREE: k dispozici jen 5 datacentrových IP (`BUYPROXIES94952`), `RESIDENTIAL` 0; `country-CZ` na platformě vrací 403 Forbidden a externí přístup k proxy (`proxy.apify.com` z lokálu) je zakázaný („Proxy external access feature isn't enabled"). Plné pokrytí Actoru B z Apify tedy vyžaduje placený plán s rezidenční proxy CZ, nebo sklizeň z české IP.

@@ -26,7 +26,7 @@
     "resolveParcels": { "title": "Resolve parcels in RÚIAN", "type": "boolean", "default": true, "description": "Area, land type and WGS84 position of parcels named in the notice." },
     "withContext": { "title": "Add protected and mining areas", "type": "boolean", "default": false, "description": "CHKO and zone, national park, Natura 2000 and mining areas at up to 3 parcels per notice (extra RÚIAN requests)." },
     "maxParcelLookups": { "title": "Max RÚIAN lookups", "type": "integer", "default": 1000, "minimum": 0, "description": "Upper bound of parcel lookups in RÚIAN for the whole run." },
-    "proxyConfiguration": { "title": "Proxy for unreachable boards", "type": "object", "editor": "proxy", "description": "Many municipal sites refuse connections from foreign data-centre IPs. With Apify Proxy on, boards that do not connect are retried through a Czech exit (only those, so traffic stays small).", "prefill": { "useApifyProxy": true, "apifyProxyCountry": "CZ" } },
+    "proxyConfiguration": { "title": "Proxy for unreachable boards", "type": "object", "editor": "proxy", "description": "Many municipal sites refuse connections from foreign data-centre IPs. With Apify Proxy on, boards that do not connect are retried through a Czech exit (only those, so traffic stays small).", "prefill": { "useApifyProxy": false } },
     "limit": { "title": "Max notices", "type": "integer", "default": 500, "minimum": 1, "maximum": 10000, "description": "You pay per notice in the dataset." }
   }
 }
