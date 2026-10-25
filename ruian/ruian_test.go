@@ -148,6 +148,14 @@ func TestExtractGolden(t *testing.T) {
 		{"no spaces", "parc.č.1015/3 v k.ú. Hrutov", "", []wantRef{{"1015/3", 648876}}},
 		{"kat. území", "pozemek p.č. 2269/14 v kat. území Hrutov", "", []wantRef{{"2269/14", 648876}}},
 		{"katastrálního území", "pozemku parc. č. 8 katastrálního území Vinohrady", "", []wantRef{{"8", 727164}}},
+		{"až range", "pozemky parc. č. 10 až 12 v k. ú. Hrutov", "", []wantRef{{"10", 648876}, {"11", 648876}, {"12", 648876}}},
+		{"line break in name", "na pozemcích parc. č.\n2671/36, 6531 v k. ú. Pohořelice nad\nJihlavou\n", "",
+			[]wantRef{{"2671/36", 724866}, {"6531", 724866}}},
+		{"k.ú. after second list", "Novostavba RD, Velký Dvůr parc.č.6534/6 na pozemku parc.č.6534/7 v k.ú. Hrutov", "",
+			[]wantRef{{"6534/6", 648876}, {"6534/7", 648876}}},
+		{"č. parc.", "Kunčičky, č. parc. 295/1, DTS, kNN; k. ú. Hrutov", "", []wantRef{{"295/1", 648876}}},
+		{"parcelách č.", "Novostavba bytového domu na parcelách č. 22, 23, 29/1 v k. ú. Vinohrady", "",
+			[]wantRef{{"22", 727164}, {"23", 727164}, {"29/1", 727164}}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -164,6 +172,39 @@ func TestExtractGolden(t *testing.T) {
 				t.Errorf("got %v\nwant %v", got, c.want)
 			}
 		})
+	}
+}
+
+func TestFoldCollision(t *testing.T) {
+	g := testGazetteer(t)
+	if m := g.FindKU("Tašovice", ""); len(m) != 1 || m[0].Score != 1 {
+		t.Errorf("exact Tašovice: %v", m)
+	}
+	if m := g.FindKU("Tasovice", ""); len(m) != 1 || m[0].KU.Name != "Tasovice" {
+		t.Errorf("exact Tasovice: %v", m)
+	}
+	if m := g.FindKU("TASOVICE", ""); len(m) != 1 || m[0].KU.Name != "Tasovice" {
+		t.Errorf("upper-case exact: %v", m)
+	}
+}
+
+func TestMatchKUNames(t *testing.T) {
+	cands := []Unit{{610003, "Město Brno"}, {610186, "Staré Brno"}, {610674, "Jehnice"}, {612006, "Líšeň"}, {1, "Les"}}
+	got := MatchKUNames("vyrozumění: Pekařská, Staré Brno - 958/1; Rekonstrukce RD u Amálky, Jehnice; les u Líšně", cands)
+	var names []string
+	for _, u := range got {
+		names = append(names, u.Name)
+	}
+	if strings.Join(names, ",") != "Staré Brno,Jehnice,Líšeň" {
+		t.Errorf("MatchKUNames = %v", names)
+	}
+}
+
+func TestExtractKUs(t *testing.T) {
+	g := testGazetteer(t)
+	got := ExtractKUs("Oznámení o záměru pronajmout\nKatastrální území: Hrutov Území městského obvodu: Jih; dále v k. ú. Vinohradech a k.ú. Hrutov", g)
+	if len(got) != 2 || got[0].Code != 648876 || got[1].Code != 727164 {
+		t.Errorf("ExtractKUs = %v", got)
 	}
 }
 

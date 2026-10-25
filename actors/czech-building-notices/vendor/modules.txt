@@ -1,0 +1,4 @@
+# github.com/lioilsources/apifysandbox/ruian v0.1.0 => ../../ruian
+## explicit; go 1.25.0
+github.com/lioilsources/apifysandbox/ruian
+# github.com/lioilsources/apifysandbox/ruian => ../../ruian

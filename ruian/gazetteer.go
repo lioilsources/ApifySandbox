@@ -54,9 +54,12 @@ type Gazetteer struct {
 	kuByCode   map[int]int
 	obec       map[int]obecRec
 	obecByName map[string][]int // folded name → codes (names repeat: 15× Lhota)
+	kuByName   map[string]int   // lowercase name with diacritics → index in ku
+	kuByObec   map[int][]int    // obec code → indexes in ku
 	pou        map[int]Unit     // + orp code in pouORP
 	pouORP     map[int]int
 	orp        map[int]Unit
+	orpKraj    map[int]int
 	okres      map[int]Unit
 	okresKr    map[int]int
 	kraj       map[int]Unit
@@ -65,7 +68,16 @@ type Gazetteer struct {
 
 func newGazetteer() *Gazetteer {
 	return &Gazetteer{kuByCode: map[int]int{}, obec: map[int]obecRec{}, pou: map[int]Unit{}, pouORP: map[int]int{},
-		orp: map[int]Unit{}, okres: map[int]Unit{}, okresKr: map[int]int{}, kraj: map[int]Unit{}}
+		orp: map[int]Unit{}, orpKraj: map[int]int{}, okres: map[int]Unit{}, okresKr: map[int]int{}, kraj: map[int]Unit{}}
+}
+
+// krajOf finds the region via the district, or via the ORP where there is
+// no district (Prague has none in RÚIAN).
+func (g *Gazetteer) krajOf(o obecRec) Unit {
+	if k, ok := g.okresKr[o.okres]; ok && o.okres != 0 {
+		return g.kraj[k]
+	}
+	return g.kraj[g.orpKraj[g.pouORP[o.pou]]]
 }
 
 func (g *Gazetteer) addKU(code, obec int, name string) {
@@ -94,7 +106,11 @@ func (c *Client) LoadGazetteer(ctx context.Context) (*Gazetteer, error) {
 			g.pou[k] = Unit{k, str(a["nazev"])}
 			g.pouORP[k] = num(a["orp"])
 		}},
-		{LayerORP, "kod,nazev", func(a map[string]any) { k := num(a["kod"]); g.orp[k] = Unit{k, str(a["nazev"])} }},
+		{LayerORP, "kod,nazev,vusc", func(a map[string]any) {
+			k := num(a["kod"])
+			g.orp[k] = Unit{k, str(a["nazev"])}
+			g.orpKraj[k] = num(a["vusc"])
+		}},
 		{LayerOkres, "kod,nazev,vusc", func(a map[string]any) {
 			k := num(a["kod"])
 			g.okres[k] = Unit{k, str(a["nazev"])}
@@ -149,8 +165,11 @@ func (g *Gazetteer) index() {
 		g.obecByName[k] = append(g.obecByName[k], code)
 	}
 	sort.Slice(g.ku, func(i, j int) bool { return g.ku[i].code < g.ku[j].code })
+	g.kuByName, g.kuByObec = map[string]int{}, map[int][]int{}
 	for i, k := range g.ku {
 		g.kuByCode[k.code] = i
+		g.kuByName[strings.ToLower(k.name)] = i
+		g.kuByObec[k.obec] = append(g.kuByObec[k.obec], i)
 	}
 }
 
@@ -172,9 +191,85 @@ func (g *Gazetteer) Territory(kuCode int) (Territory, bool) {
 		t.POU = g.pou[o.pou]
 		t.ORP = g.orp[g.pouORP[o.pou]]
 		t.Okres = g.okres[o.okres]
-		t.Kraj = g.kraj[g.okresKr[o.okres]]
+		t.Kraj = g.krajOf(o)
 	}
 	return t, true
+}
+
+// KUsOfObec lists the k.ú. of a municipality.
+func (g *Gazetteer) KUsOfObec(obec int) []Unit {
+	var out []Unit
+	for _, i := range g.kuByObec[obec] {
+		out = append(out, Unit{g.ku[i].code, g.ku[i].name})
+	}
+	return out
+}
+
+// KUsOfORP lists the k.ú. of every municipality in an ORP district.
+func (g *Gazetteer) KUsOfORP(orp int) []Unit {
+	var out []Unit
+	for code, o := range g.obec {
+		if g.pouORP[o.pou] == orp {
+			out = append(out, g.KUsOfObec(code)...)
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Code < out[j].Code })
+	return out
+}
+
+// Units lists one level: "kraj", "okres", "orp" or "pou", sorted by name.
+func (g *Gazetteer) Units(level string) []Unit {
+	var m map[int]Unit
+	switch level {
+	case "kraj":
+		m = g.kraj
+	case "okres":
+		m = g.okres
+	case "orp":
+		m = g.orp
+	case "pou":
+		m = g.pou
+	}
+	out := make([]Unit, 0, len(m))
+	for _, u := range m {
+		out = append(out, u)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
+}
+
+// FindUnit matches a kraj/okres/ORP name ignoring case, diacritics and the
+// words "kraj"/"Kraj"; "Vysočina" finds "Kraj Vysočina".
+func (g *Gazetteer) FindUnit(level, name string) (Unit, bool) {
+	q := strings.Join(words(name), " ")
+	strip := func(s string) string {
+		s = strings.Join(words(s), " ")
+		s = strings.TrimSuffix(strings.TrimPrefix(s, "kraj "), " kraj")
+		return strings.TrimPrefix(s, "hlavni mesto ")
+	}
+	for _, u := range g.Units(level) {
+		if f := strings.Join(words(u.Name), " "); f == q || strip(u.Name) == strip(name) {
+			return u, true
+		}
+	}
+	if code, err := strconv.Atoi(strings.TrimSpace(name)); err == nil {
+		for _, u := range g.Units(level) {
+			if u.Code == code {
+				return u, true
+			}
+		}
+	}
+	return Unit{}, false
+}
+
+// ObecTerritory is the administrative chain of a municipality (KU empty).
+func (g *Gazetteer) ObecTerritory(obecCode int) (Territory, bool) {
+	o, ok := g.obec[obecCode]
+	if !ok {
+		return Territory{}, false
+	}
+	return Territory{Obec: Unit{obecCode, o.name}, POU: g.pou[o.pou], ORP: g.orp[g.pouORP[o.pou]],
+		Okres: g.okres[o.okres], Kraj: g.krajOf(o)}, true
 }
 
 // FindObec returns municipalities with exactly this name (diacritics and
@@ -206,6 +301,10 @@ func (g *Gazetteer) FindKU(name, hint string) []KUMatch {
 		}
 		return nil
 	}
+	if i, ok := g.kuByName[strings.ToLower(strings.Join(strings.Fields(name), " "))]; ok {
+		t, _ := g.Territory(g.ku[i].code)
+		return []KUMatch{{t, 1}} // names are unique nationwide
+	}
 	qf := strings.Join(words(name), " ")
 	qs := stems(name)
 	if len(qs) == 0 {
@@ -217,7 +316,7 @@ func (g *Gazetteer) FindKU(name, hint string) []KUMatch {
 		var score float64
 		switch {
 		case k.fold == qf || strings.Join(words(k.name), " ") == qf:
-			score = 1
+			score = 0.97 // equal without diacritics: "Tasovice" vs "Tašovice" stay ambiguous
 		case len(k.stems) == len(qs):
 			d := totalDist(qs, k.stems)
 			if d < 0 {

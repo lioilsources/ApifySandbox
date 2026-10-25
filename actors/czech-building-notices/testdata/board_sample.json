@@ -1,0 +1,32 @@
+﻿{
+  "@context": "https://ofn.gov.cz/úřední-desky/2021-07-20/kontexty/úřední-deska.jsonld",
+  "typ": "Úřední deska",
+  "iri": "https://example.cz/uredni-deska",
+  "stránka": "https://example.cz/uredni-deska",
+  "provozovatel": { "typ": "Osoba", "ičo": "00283509" },
+  "informace": [
+    {
+      "typ": ["Digitální objekt", "Informace na úřední desce"],
+      "iri": "https://example.cz/ud/1",
+      "url": "https://example.cz/ud/1.html",
+      "název": { "cs": "Rozhodnutí o povolení ve zrychleném řízení" },
+      "popis": { "cs": "Stavební úpravy RD na pozemku parc.č.1920 v k.ú.Pohořelice nad Jihlavou" },
+      "vyvěšení": { "typ": "Časový okamžik", "datum": "2026-10-22" },
+      "relevantní_do": { "typ": "Časový okamžik", "datum": "2026-11-09" },
+      "číslo_jednací": "MUPO-149053/2026/SU/TRM",
+      "spisová_značka": "SZ MUPO 42963/2026",
+      "agenda": [{ "typ": "Agenda", "název": { "cs": "Veřejné vyhlášky" } }],
+      "dokument": [{ "typ": "Digitální objekt", "název": { "cs": "rozhodnuti.pdf" }, "url": "https://example.cz/d/1.pdf" }]
+    },
+    {
+      "typ": "Informace na úřední desce",
+      "název": { "cs": "Záměr prodat &quot;část pozemku&quot; p. č. 338/2 v k. ú. Hrutov" },
+      "popis": "",
+      "vyvěšení": { "typ": "Časový okamžik", "datum_a_čas": "2026-10-23T12:06:00+02:00" },
+      "relevantní_do": { "typ": "Časový okamžik", "nespecifikovaný": true },
+      "agenda": "Majetek",
+      "odbor": { "cs": "Odbor majetku" }
+    },
+    { "typ": "Informace na úřední desce", "název": { "cs": "" } }
+  ]
+}

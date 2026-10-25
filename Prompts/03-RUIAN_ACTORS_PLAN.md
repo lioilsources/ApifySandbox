@@ -6,6 +6,12 @@ sandboxu, Fáze 3) a `02-CZ_LEGAL_ACTORS_PLAN.md` (kap. 3 Actor B, kap. 5 ČÚZK
 RÚIAN). Tento dokument je samostatný: všechno potřebné pro implementaci je
 tady, do 02 se odkazuje jen pro širší kontext.
 
+**Stav 2026-10-25:** implementováno lokálně (balíček `ruian/`, Actor D
+`actors/ruian-parcel-mcp`, Actor B `actors/czech-building-notices`), testy
+zelené, Docker image ověřeny. Nenasazeno na Apify (push a první placený běh
+schvaluje uživatel). Skutečná čísla a odchylky od plánu: `NOTES.md` obou
+Actorů – mj. 266 desek místo 573 a pokrytí ~2/3 ORP.
+
 ---
 
 ## 0. Proč a co stavíme

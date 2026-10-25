@@ -25,13 +25,14 @@ type ParcelRef struct {
 }
 
 var (
-	// "parc. č.", "p. č.", "pozemek parc. č.", "pozemků č.", "parcela číslo", "st. p. č.", "st. parc. č.", "stavební parcela č."
-	triggerRe = regexp.MustCompile(`(?i)(?:\b(?:pozem\p{L}*|parcel\p{L}*)\s+(?:(?:parc\.|p\.)\s*)?(?:č\.|čís(?:l\p{L}*)?\.?)|\bparc\.\s*č(?:\.|ís\p{L}*\.?)|\bp\.\s*č\.|\bst\.\s*(?:p\.|parc\.)\s*(?:č\.)?|\bstavební\p{L}*\s+parcel\p{L}*\s+(?:č\.|čís\p{L}*\.?))`)
+	// (\b is ASCII-only in Go, so "č." needs an explicit left boundary)
+	// "parc. č.", "p. č.", "č. parc.", "pozemek parc. č.", "pozemků č.", "parcela číslo", "st. p. č.", "st. parc. č.", "stavební parcela č."
+	triggerRe = regexp.MustCompile(`(?i)(?:\b(?:pozem\p{L}*|parcel\p{L}*)\s+(?:(?:parc\.|p\.)\s*)?(?:č\.|čís(?:l\p{L}*)?\.?)|\bparc\.\s*č(?:\.|ís\p{L}*\.?)|\bp\.\s*č\.|(?:^|[\s(,;])č\.\s*parc\.|\bst\.\s*(?:p\.|parc\.)\s*(?:č\.)?|\bstavební\p{L}*\s+parcel\p{L}*\s+(?:č\.|čís\p{L}*\.?))`)
 	// "k. ú.", "k.ú.", "kat. úz.", "katastrální území", "katastrálním území"
 	kuRe    = regexp.MustCompile(`(?i)(?:\bk\.\s*ú\.|\bkat\.\s*(?:úz\.|území)|\bkatastrální\p{L}*\s+území\p{L}*)\s*:?\s*`)
 	itemRe  = regexp.MustCompile(`^\s*(st\.\s*(?:p\.\s*)?(?:č\.\s*)?)?(\d{1,5})(?:\s*/\s*(\d{1,4}))?`)
-	rangeRe = regexp.MustCompile(`^\s*[-–]\s*(?:(\d{1,5})\s*/\s*)?(\d{1,5})`)
-	sepRe   = regexp.MustCompile(`^\s*(?:,|;|\ba\b|\bi\b|\baž\b|\bnebo\b|\bpak\b)\s*`)
+	rangeRe = regexp.MustCompile(`^\s*(?:[-–]|až\s)\s*(?:(\d{1,5})\s*/\s*)?(\d{1,5})`)
+	sepRe   = regexp.MustCompile(`^\s*(?:,|;|(?:a|i|nebo|a\s+dále)\s)\s*`)
 	codeRe  = regexp.MustCompile(`^\s*[(\[]?\s*(?:kód\s*:?\s*)?(\d{6})\s*[)\]]?`)
 )
 
@@ -104,6 +105,67 @@ func ExtractParcelRefs(text string, g *Gazetteer, kuHint string) []ParcelRef {
 	}
 	return out
 }
+
+// ExtractKUs returns the distinct cadastral areas named in text
+// ("v k. ú. Břevnov", "Katastrální území: Hrabůvka"), resolved only when
+// the match is unambiguous.
+func ExtractKUs(text string, g *Gazetteer) []Unit {
+	if g == nil {
+		return nil
+	}
+	var out []Unit
+	seen := map[int]bool{}
+	for _, m := range findKUMentions(text, g) {
+		if m.ku != nil && !seen[m.ku.Code] {
+			seen[m.ku.Code] = true
+			out = append(out, *m.ku)
+		}
+	}
+	return out
+}
+
+// MatchKUNames finds names of the candidate k.ú. (typically those of the
+// office's municipality or ORP) written in text without a "k. ú." marker:
+// "Pekařská, Staré Brno", "u Amálky, Jehnice". Single-word names shorter
+// than 5 letters and lowercase occurrences are ignored to avoid false hits.
+func MatchKUNames(text string, cands []Unit) []Unit {
+	type tok struct {
+		stem string
+		cap  bool
+	}
+	var toks []tok
+	for _, loc := range wordLocRe.FindAllStringIndex(text, -1) {
+		w := text[loc[0]:loc[1]]
+		r, _ := utf8.DecodeRuneInString(w)
+		toks = append(toks, tok{stem(Fold(w)), unicode.IsUpper(r)})
+	}
+	var out []Unit
+	for _, c := range cands {
+		cs := stems(c.Name)
+		if len(cs) == 0 || (len(cs) == 1 && len([]rune(c.Name)) < 5) {
+			continue
+		}
+		for i := 0; i+len(cs) <= len(toks); i++ {
+			if !toks[i].cap {
+				continue
+			}
+			ok := true
+			for j, st := range cs {
+				if stemDist(toks[i+j].stem, st) < 0 {
+					ok = false
+					break
+				}
+			}
+			if ok {
+				out = append(out, c)
+				break
+			}
+		}
+	}
+	return out
+}
+
+var wordLocRe = regexp.MustCompile(`[\p{L}\d]+`)
 
 // parseItems reads "123/4, 125 a st. 56" or "120–125" from pos, up to limit.
 func parseItems(text string, pos, limit int, groupBuilding bool) ([]ParcelRef, int) {
@@ -207,8 +269,9 @@ func readPlaceName(text string, pos int) (string, int) {
 	end := pos
 	i := pos
 	for len(words) < 8 {
-		for i < len(text) && text[i] == ' ' {
-			i++
+		for i < len(text) && (text[i] == ' ' || text[i] == '\t' || text[i] == '\r' ||
+			(text[i] == '\n' && !strings.HasPrefix(strings.TrimLeft(text[i+1:], " \t\r"), "\n"))) {
+			i++ // a single line break inside a name ("Pohořelice nad\nJihlavou") is a space
 		}
 		j := i
 		for j < len(text) {
@@ -289,7 +352,9 @@ func pickKU(text string, kus []kuMention, start, end, limit int, hint *kuMention
 	}
 	for i := range kus {
 		k := &kus[i]
-		if k.start >= end && k.start < limit && k.start-end <= 160 && !sentenceBreak(between[i]) {
+		// nearest k.ú. after the numbers, even past another list in the same
+		// sentence ("parc. č. 1 a pozemek parc. č. 2 v k. ú. X": both in X)
+		if k.start >= end && k.start-end <= 160 && !sentenceBreak(between[i]) {
 			return k, 1
 		}
 	}

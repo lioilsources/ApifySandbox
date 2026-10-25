@@ -1,0 +1,39 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string" },
+      "type": { "type": "string" },
+      "typeLabel": { "type": "string" },
+      "title": { "type": "string" },
+      "posted": { "type": "string" },
+      "relevantUntil": { "type": "string" },
+      "caseNumber": { "type": "string" },
+      "office": { "type": "object" },
+      "territory": { "type": ["object", "null"] },
+      "kus": { "type": "array" },
+      "parcels": { "type": "array" },
+      "documents": { "type": "array" },
+      "url": { "type": "string" }
+    },
+    "required": ["id", "type", "title", "office"]
+  },
+  "views": {
+    "overview": {
+      "title": "Notices",
+      "transformation": { "fields": ["posted", "typeLabel", "title", "office", "kus", "url"] },
+      "display": {
+        "component": "table",
+        "properties": {
+          "posted": { "label": "Posted", "format": "date" },
+          "typeLabel": { "label": "Type", "format": "text" },
+          "title": { "label": "Title", "format": "text" },
+          "office": { "label": "Office", "format": "object" },
+          "kus": { "label": "Cadastral areas", "format": "array" },
+          "url": { "label": "Notice", "format": "link" }
+        }
+      }
+    }
+  }
+}

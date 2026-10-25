@@ -1,0 +1,31 @@
+{
+  "title": "Czech building and land notices",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "kraj": { "title": "Region (kraj)", "type": "string", "editor": "textfield", "description": "e.g. \"Jihomoravský\", \"Vysočina\", \"Praha\"", "prefill": "Jihomoravský" },
+    "orp": { "title": "ORP district", "type": "string", "editor": "textfield", "description": "Municipality with extended powers, e.g. \"Jihlava\"" },
+    "obec": { "title": "Municipality", "type": "string", "editor": "textfield", "description": "Name or code (names repeat; the run tells you the codes if ambiguous)" },
+    "ku": { "title": "Cadastral areas (k.ú.)", "type": "array", "editor": "stringList", "description": "Names or 6-digit codes" },
+    "bbox": { "title": "Bounding box", "type": "array", "editor": "json", "description": "[minLon, minLat, maxLon, maxLat] in WGS84; only notices whose parcels could be resolved match" },
+    "types": {
+      "title": "Notice types",
+      "type": "array",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["zahajeni", "rozhodnuti", "kolaudace", "odstraneni", "stanovisko", "uzemni_plan", "eia", "majetek", "ostatni_stavebni"],
+        "enumTitles": ["Start of proceedings", "Decision / permit", "Occupancy / change of use", "Demolition", "Binding opinion (JES)", "Zoning plan", "EIA", "Municipal land sale / lease", "Other building info"] },
+      "description": "Default: all types"
+    },
+    "keywords": { "title": "Keywords", "type": "array", "editor": "stringList", "description": "Any of them in title or description, diacritics ignored, e.g. \"fotovoltaick\", \"bytový dům\"" },
+    "since": { "title": "Posted since", "type": "string", "editor": "textfield", "description": "YYYY-MM-DD or relative, e.g. \"7d\", \"2w\"", "prefill": "7d" },
+    "until": { "title": "Posted until", "type": "string", "editor": "textfield", "description": "YYYY-MM-DD" },
+    "onlyNew": { "title": "Only new since the last run", "type": "boolean", "default": false, "description": "For daily schedules: returns only notices not returned by earlier runs (state kept in the named key-value store czech-building-notices-state)." },
+    "stateKey": { "title": "State key", "type": "string", "editor": "textfield", "description": "Use a different key per schedule when you run several schedules with different filters." },
+    "includeExpired": { "title": "Include expired notices", "type": "boolean", "default": false, "description": "Past their 'relevant until' date; only metadata and link are returned." },
+    "inProtectedArea": { "title": "Only in protected areas", "type": "boolean", "default": false, "description": "Only notices with a parcel in a CHKO, national park, Natura 2000 site or nature reserve." },
+    "resolveParcels": { "title": "Resolve parcels in RÚIAN", "type": "boolean", "default": true, "description": "Area, land type and WGS84 position of parcels named in the notice." },
+    "withContext": { "title": "Add protected and mining areas", "type": "boolean", "default": false },
+    "maxParcelLookups": { "title": "Max RÚIAN lookups", "type": "integer", "default": 1000, "minimum": 0 },
+    "limit": { "title": "Max notices", "type": "integer", "default": 500, "minimum": 1, "maximum": 10000, "description": "You pay per notice in the dataset." }
+  }
+}
