@@ -207,3 +207,8 @@ Formát: `## YYYY-MM-DD — téma`, pod tím fakta. Odhad ceny vždy **před** r
 - Důsledek: doporučená cesta z README („vždy jít přes agenta apify“) po OAuth nefunguje; agent spadne na „Route 1 přes Apify CLI“, které není nainstalované. Hlavní session musí volat MCP sama.
 - Repo `apify/apify-claude-code-plugin` má issues zapnuté a prázdné; návrh issue je připravený, založení schvaluje uživatel.
 - Založeno jako [apify/apify-claude-code-plugin#27](https://github.com/apify/apify-claude-code-plugin/issues/27) (2026-10-19).
+
+## 2026-10-19 — Fáze 1b: první plně automatický běh a rotace tokenu
+
+- Řetězec schedule → task → dataset → JODA proběhl bez zásahu: run tasku v 06:10 CEST (API: 04:10 UTC) za $0.0928, `terra-ingest.timer` v 06:41 stáhl 120 nových inzerátů, 0 přeskočených, stav 240 inzerátů / 224 KB. Odhad ~$2.8/měsíc drží.
+- Token prošel chatem (uživatel vložil výstup `cat .env`), proto rotace: nový token v konzoli, do `.env` lokálně i na JODĚ přes `pbpaste` a ssh stdin s `umask 077`, ověřeno `GET /v2/users/me` z obou strojů. Starý token uživatel zneplatnil. Poučení pro postupy: ani „ukaž mi token“ se nemá řešit výpisem do terminálu, který se pak vkládá do chatu; stačí odkaz na konzoli.
