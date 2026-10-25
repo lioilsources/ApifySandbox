@@ -1,0 +1,70 @@
+{
+  "title": "RÚIAN parcels, addresses and places",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "parcels": {
+      "title": "Parcels",
+      "type": "array",
+      "description": "Parcels to look up: cadastral area (k.ú.) name or code and parcel number. Declined Czech names work (\"Hrutově\"). Use \"st. 56\" for a stavební parcela.",
+      "editor": "json",
+      "prefill": [{ "ku": "Hrutov", "number": "st. 1" }]
+    },
+    "text": {
+      "title": "Czech text with parcel references",
+      "type": "string",
+      "description": "A public notice, contract or decision. Every \"parc. č. …\" / \"p. č. …\" / \"st. p. č. …\" with its k.ú. is extracted and looked up.",
+      "editor": "textarea"
+    },
+    "kuHint": {
+      "title": "Default k.ú. for the text",
+      "type": "string",
+      "description": "Used for parcel numbers in the text that have no k.ú. nearby.",
+      "editor": "textfield"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "type": "array",
+      "description": "Czech addresses, e.g. \"Veveří 95, Brno\" or \"Hrutov 12\". Each returns the official address point, WGS84 position and building data.",
+      "editor": "stringList"
+    },
+    "points": {
+      "title": "Points (WGS84)",
+      "type": "array",
+      "description": "[{\"lat\": 50.03, \"lon\": 13.87}] → k.ú., municipality, ORP, protected areas, mining areas.",
+      "editor": "json"
+    },
+    "exportKu": {
+      "title": "Export all parcels of a k.ú.",
+      "type": "string",
+      "description": "k.ú. name or code. Writes a GeoJSON file of all its parcels to the key-value store.",
+      "editor": "textfield"
+    },
+    "withBuildings": {
+      "title": "Include buildings",
+      "type": "boolean",
+      "description": "Building on each stavební parcela and at each address (use, floors, flats, area, heating, connections).",
+      "default": true
+    },
+    "withContext": {
+      "title": "Include protected areas",
+      "type": "boolean",
+      "description": "CHKO and zone, national park, Natura 2000, nature reserves, mining areas, soil unit (one extra request per result).",
+      "default": false
+    },
+    "withGeometry": {
+      "title": "Include parcel polygons",
+      "type": "boolean",
+      "description": "Simplified GeoJSON polygon per parcel.",
+      "default": false
+    },
+    "limit": {
+      "title": "Max results",
+      "type": "integer",
+      "description": "The run stops after this many dataset items.",
+      "default": 200,
+      "minimum": 1,
+      "maximum": 10000
+    }
+  }
+}

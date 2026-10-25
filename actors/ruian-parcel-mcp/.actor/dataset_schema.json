@@ -1,0 +1,53 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "type": { "type": "string", "description": "parcel, text-parcel, text-reference, address, context, export, *-not-found" },
+      "query": { "type": "string" },
+      "number": { "type": "string" },
+      "territory": { "type": "object" },
+      "areaM2": { "type": "number" },
+      "landType": { "type": "string" },
+      "centroid": { "type": ["object", "null"] },
+      "buildings": { "type": "array" },
+      "text": { "type": "string" },
+      "point": { "type": ["object", "null"] },
+      "building": { "type": ["object", "null"] },
+      "protectedAreas": { "type": "array" },
+      "links": { "type": "object" }
+    },
+    "required": ["type", "query"]
+  },
+  "views": {
+    "parcels": {
+      "title": "Parcels",
+      "transformation": { "fields": ["query", "number", "territory", "areaM2", "landType", "centroid", "links"] },
+      "display": {
+        "component": "table",
+        "properties": {
+          "query": { "label": "Query", "format": "text" },
+          "number": { "label": "Parcel", "format": "text" },
+          "territory": { "label": "Territory", "format": "object" },
+          "areaM2": { "label": "Area m²", "format": "number" },
+          "landType": { "label": "Land type", "format": "text" },
+          "centroid": { "label": "WGS84", "format": "object" },
+          "links": { "label": "Links", "format": "object" }
+        }
+      }
+    },
+    "addresses": {
+      "title": "Addresses",
+      "transformation": { "fields": ["query", "text", "point", "building"] },
+      "display": {
+        "component": "table",
+        "properties": {
+          "query": { "label": "Query", "format": "text" },
+          "text": { "label": "Address", "format": "text" },
+          "point": { "label": "WGS84", "format": "object" },
+          "building": { "label": "Building", "format": "object" }
+        }
+      }
+    }
+  }
+}

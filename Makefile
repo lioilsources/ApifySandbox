@@ -1,9 +1,11 @@
-.PHONY: test build actor-test actor-image
+.PHONY: test build actor-test actor-image ruian-vendor ruian-online ruian-image ruian-codebooks
 GO ?= go
 
 test:
 	$(GO) vet ./... && $(GO) test ./...
 	cd actors/czech-public-contracts && $(GO) vet ./... && $(GO) test ./...
+	cd ruian && $(GO) vet ./... && $(GO) test ./...
+	cd actors/ruian-parcel-mcp && $(GO) vet ./... && $(GO) test ./...
 
 build:
 	$(GO) build -o bin/ ./cmd/...
@@ -35,3 +37,16 @@ tradebot-data: ## backfill Binance history and append Kraken days (free, keyless
 
 tradebot-backtest: ## variant A on stored candles, equity curve to data/tradebot
 	go run ./cmd/tradebot-backtest -equity data/tradebot/equity_A.csv
+
+## RÚIAN (Prompts/03-RUIAN_ACTORS_PLAN.md)
+ruian-vendor: ## copy the shared ruian package into Actor D (the Apify build sees only the Actor dir)
+	cd actors/ruian-parcel-mcp && $(GO) mod tidy && $(GO) mod vendor
+
+ruian-online: ## live checks against ČÚZK (free, keyless)
+	cd ruian && $(GO) test -count=1 -tags online ./...
+
+ruian-codebooks: ## refresh official ČÚZK codebooks, then run ruian-vendor
+	$(GO) run ./cmd/ruian-codebooks
+
+ruian-image: ruian-vendor
+	docker build -t ruian-parcel-mcp:dev actors/ruian-parcel-mcp

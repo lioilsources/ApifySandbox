@@ -1,0 +1,920 @@
+{
+ "books": {
+  "druhCislovani": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CS_DRUH_CISLOVANI_PARCEL.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Stavební"
+    },
+    {
+     "code": 2,
+     "name": "Pozemková"
+    }
+   ]
+  },
+  "druhKonstrukce": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_DRUH_KONSTRUKCE.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Cihly, tvárnice, cihlové bloky"
+    },
+    {
+     "code": 2,
+     "name": "Kámen"
+    },
+    {
+     "code": 3,
+     "name": "Kámen a cihly"
+    },
+    {
+     "code": 4,
+     "name": "Stěnové panely",
+     "validTo": "01.07.2024"
+    },
+    {
+     "code": 5,
+     "name": "Nepálené cihly"
+    },
+    {
+     "code": 6,
+     "name": "Dřevo",
+     "validTo": "01.07.2024"
+    },
+    {
+     "code": 7,
+     "name": "Jiné materiály a kombinace"
+    },
+    {
+     "code": 8,
+     "name": "Nedefinováno"
+    },
+    {
+     "code": 9,
+     "name": "Nezjištěno"
+    },
+    {
+     "code": 10,
+     "name": "Kámen, cihly, tvárnice vč. kombinací"
+    },
+    {
+     "code": 11,
+     "name": "Monolit"
+    },
+    {
+     "code": 41,
+     "name": "Stěnové panely - beton a železobeton"
+    },
+    {
+     "code": 42,
+     "name": "Stěnové panely - dřevo"
+    },
+    {
+     "code": 43,
+     "name": "Stěnové panely - ostatní"
+    },
+    {
+     "code": 61,
+     "name": "Dřevo - Sruby a roubenky"
+    },
+    {
+     "code": 62,
+     "name": "Dřevo - Lehký rámový skelet (panelová montáž)"
+    },
+    {
+     "code": 63,
+     "name": "Dřevo - Lehký rámový skelet (staveništní montáž)"
+    },
+    {
+     "code": 64,
+     "name": "Dřevo - Těžký skelet"
+    },
+    {
+     "code": 65,
+     "name": "Dřevo - Panely z masivního dřeva"
+    },
+    {
+     "code": 66,
+     "name": "Dřevo - Ostatní dřevěné konstrukce"
+    }
+   ]
+  },
+  "druhPozemku": {
+   "source": "https://services.cuzk.cz/sestavy/cis/SC_D_POZEMKU.zip",
+   "entries": [
+    {
+     "code": 2,
+     "name": "orná půda"
+    },
+    {
+     "code": 3,
+     "name": "chmelnice"
+    },
+    {
+     "code": 4,
+     "name": "vinice"
+    },
+    {
+     "code": 5,
+     "name": "zahrada"
+    },
+    {
+     "code": 6,
+     "name": "ovocný sad"
+    },
+    {
+     "code": 7,
+     "name": "trvalý travní porost"
+    },
+    {
+     "code": 8,
+     "name": "trvalý travní porost",
+     "validTo": "01.09.2000"
+    },
+    {
+     "code": 10,
+     "name": "lesní pozemek"
+    },
+    {
+     "code": 11,
+     "name": "vodní plocha"
+    },
+    {
+     "code": 13,
+     "name": "zastavěná plocha a nádvoří"
+    },
+    {
+     "code": 14,
+     "name": "ostatní plocha"
+    }
+   ]
+  },
+  "pripojeniKanalizace": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_PRIPOJENI_KANAL.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Přípoj na kanalizační síť"
+    },
+    {
+     "code": 2,
+     "name": "Vlastní čistička odpadních vod"
+    },
+    {
+     "code": 3,
+     "name": "Žumpa, jímka, septik"
+    },
+    {
+     "code": 4,
+     "name": "Bez kanalizace a jímky"
+    },
+    {
+     "code": 8,
+     "name": "Nedefinováno"
+    },
+    {
+     "code": 9,
+     "name": "Nezjištěno"
+    }
+   ]
+  },
+  "pripojeniPlynu": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_PRIPOJENI_PLYNU.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Plyn z veřejné sítě"
+    },
+    {
+     "code": 2,
+     "name": "Plyn z domovního zásobníku",
+     "validTo": "01.07.2024"
+    },
+    {
+     "code": 3,
+     "name": "Bez plynu"
+    },
+    {
+     "code": 8,
+     "name": "Nedefinováno"
+    },
+    {
+     "code": 9,
+     "name": "Nezjištěno"
+    },
+    {
+     "code": 21,
+     "name": "Plyn z domovního zásobníku - LPG"
+    },
+    {
+     "code": 22,
+     "name": "Plyn z domovního zásobníku - CNG"
+    },
+    {
+     "code": 23,
+     "name": "Plyn z domovního zásobníku – bioplyn"
+    },
+    {
+     "code": 24,
+     "name": "Plyn z domovního zásobníku – důlní plyn"
+    },
+    {
+     "code": 25,
+     "name": "Plyn z domovního zásobníku - ostatní"
+    },
+    {
+     "code": 51,
+     "name": "Plyn v domě",
+     "validTo": "26.05.2016"
+    }
+   ]
+  },
+  "pripojeniVody": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_PRIPOJENI_VODY.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "S vodovodem"
+    },
+    {
+     "code": 2,
+     "name": "Bez vodovodu"
+    },
+    {
+     "code": 9,
+     "name": "Nezjištěno"
+    }
+   ]
+  },
+  "statusObce": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CS_STATUS_OBCE.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Vojenský újezd"
+    },
+    {
+     "code": 2,
+     "name": "Obec"
+    },
+    {
+     "code": 3,
+     "name": "Město"
+    },
+    {
+     "code": 4,
+     "name": "Statutární město"
+    },
+    {
+     "code": 5,
+     "name": "Hlavní město"
+    },
+    {
+     "code": 6,
+     "name": "Městys"
+    }
+   ]
+  },
+  "subtypUUP": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_SUBTYP_UUP.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Bod polohového bodového pole"
+    },
+    {
+     "code": 2,
+     "name": "Přidružený bod bodu polohového bodového pole"
+    },
+    {
+     "code": 3,
+     "name": "Bod výškového bodového pole"
+    },
+    {
+     "code": 4,
+     "name": "Bod tíhového bodového pole"
+    },
+    {
+     "code": 5,
+     "name": "Bod polohového bodového pole"
+    },
+    {
+     "code": 6,
+     "name": "Bod výškového bodového pole"
+    },
+    {
+     "code": 7,
+     "name": "Bod tíhového bodového pole"
+    },
+    {
+     "code": 8,
+     "name": "Zóna přírodní (A)"
+    },
+    {
+     "code": 9,
+     "name": "Zóna přírodě blízká (B)"
+    },
+    {
+     "code": 10,
+     "name": "Zóna soustředěné péče (C)"
+    },
+    {
+     "code": 11,
+     "name": "Zóna kulturní krajiny (D)"
+    },
+    {
+     "code": 12,
+     "name": "I. zóna"
+    },
+    {
+     "code": 13,
+     "name": "II. zóna"
+    },
+    {
+     "code": 14,
+     "name": "III. zóna"
+    },
+    {
+     "code": 15,
+     "name": "IV. zóna"
+    },
+    {
+     "code": 16,
+     "name": "Mateřská škola"
+    },
+    {
+     "code": 17,
+     "name": "1. stupeň ZŠ"
+    },
+    {
+     "code": 18,
+     "name": "2. stupeň ZŠ"
+    }
+   ]
+  },
+  "typStavebnihoObjektu": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CS_TYP_STAVEBNIHO_OBJEKTU.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "budova s číslem popisným"
+    },
+    {
+     "code": 2,
+     "name": "budova s číslem evidenčním"
+    },
+    {
+     "code": 3,
+     "name": "budova bez č.p. /č.ev."
+    }
+   ]
+  },
+  "typUUP": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_TYP_UUP.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Dobývací prostor"
+    },
+    {
+     "code": 2,
+     "name": "Chráněné ložiskové území"
+    },
+    {
+     "code": 3,
+     "name": "Chráněné území pro zvláštní zásahy do zemské kůry"
+    },
+    {
+     "code": 4,
+     "name": "Značka bodu základního bodového pole"
+    },
+    {
+     "code": 5,
+     "name": "Ochranné pásmo značky bodu základního bodového pole"
+    },
+    {
+     "code": 6,
+     "name": "Bonitovaná půdně ekologická jednotka"
+    },
+    {
+     "code": 7,
+     "name": "Národní park"
+    },
+    {
+     "code": 8,
+     "name": "Ochranné pásmo národního parku"
+    },
+    {
+     "code": 9,
+     "name": "Zóna ochrany přírody národního parku"
+    },
+    {
+     "code": 10,
+     "name": "Arondace v zóně NP dle § 18 odst. 3 zák. č. 114/1992 Sb."
+    },
+    {
+     "code": 11,
+     "name": "Klidové území národního parku"
+    },
+    {
+     "code": 12,
+     "name": "Chráněná krajinná oblast"
+    },
+    {
+     "code": 13,
+     "name": "Zóna odstupňované ochrany přírody CHKO"
+    },
+    {
+     "code": 14,
+     "name": "Národní přírodní rezervace"
+    },
+    {
+     "code": 15,
+     "name": "Ochranné pásmo národní přírodní rezervace"
+    },
+    {
+     "code": 16,
+     "name": "Národní přírodní památka"
+    },
+    {
+     "code": 17,
+     "name": "Ochranné pásmo národní přírodní památky"
+    },
+    {
+     "code": 18,
+     "name": "Přírodní rezervace"
+    },
+    {
+     "code": 19,
+     "name": "Ochranné pásmo přírodní rezervace"
+    },
+    {
+     "code": 20,
+     "name": "Přírodní památka"
+    },
+    {
+     "code": 21,
+     "name": "Ochranné pásmo přírodní památky"
+    },
+    {
+     "code": 22,
+     "name": "Evropsky významná lokalita"
+    },
+    {
+     "code": 23,
+     "name": "Ptačí oblast"
+    },
+    {
+     "code": 24,
+     "name": "Památný strom"
+    },
+    {
+     "code": 25,
+     "name": "Ochranné pásmo památného stromu"
+    },
+    {
+     "code": 26,
+     "name": "Smluvně chráněné území"
+    },
+    {
+     "code": 27,
+     "name": "Smluvně chráněný památný strom"
+    },
+    {
+     "code": 28,
+     "name": "Památková rezervace"
+    },
+    {
+     "code": 29,
+     "name": "Památková zóna"
+    },
+    {
+     "code": 30,
+     "name": "Ochranné pásmo nemovité kulturní památky, nemovité národní kulturní památky, památkové rezervace nebo památkové zóny"
+    },
+    {
+     "code": 31,
+     "name": "Školský obvod"
+    }
+   ]
+  },
+  "vybaveniVytahem": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_VYBAVENI_VYTAHEM.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "S výtahem"
+    },
+    {
+     "code": 2,
+     "name": "Bez výtahu"
+    },
+    {
+     "code": 9,
+     "name": "Nezjištěno"
+    }
+   ]
+  },
+  "zpusobVytapeni": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_ZPUSOB_VYTAPENI.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "Centrální domovní (kotel ve stavbě)",
+     "validTo": "01.07.2024"
+    },
+    {
+     "code": 2,
+     "name": "Centrální dálkové (kotel mimo stavbu)",
+     "validTo": "01.07.2024"
+    },
+    {
+     "code": 3,
+     "name": "Lokální (kamna nebo jiné topidlo v bytě)",
+     "validTo": "01.07.2024"
+    },
+    {
+     "code": 4,
+     "name": "Jiné (i bez topení)"
+    },
+    {
+     "code": 9,
+     "name": "Nezjištěno"
+    },
+    {
+     "code": 11,
+     "name": "Centrální domovní- zemní plyn"
+    },
+    {
+     "code": 12,
+     "name": "Centrální domovní  -  uhlí"
+    },
+    {
+     "code": 13,
+     "name": "Centrální domovní - dřevo a biomasa"
+    },
+    {
+     "code": 14,
+     "name": "Centrální domovní - dřevěné rostlinné pelety"
+    },
+    {
+     "code": 15,
+     "name": "Centrální domovní - elektřina"
+    },
+    {
+     "code": 16,
+     "name": "Centrální domovní - tepelné čerpadlo"
+    },
+    {
+     "code": 17,
+     "name": "Centrální domovní - solární a fotovoltaické systémy"
+    },
+    {
+     "code": 18,
+     "name": "Centrální domovní - kapalná paliva"
+    },
+    {
+     "code": 19,
+     "name": "Centrální domovní - jiné"
+    },
+    {
+     "code": 21,
+     "name": "Centrální dálkové- zemní plyn"
+    },
+    {
+     "code": 22,
+     "name": "Centrální dálkové  -  uhlí"
+    },
+    {
+     "code": 23,
+     "name": "Centrální dálkové - dřevo a biomasa"
+    },
+    {
+     "code": 24,
+     "name": "Centrální dálkové - dřevěné rostlinné pelety"
+    },
+    {
+     "code": 25,
+     "name": "Centrální dálkové - elektřina"
+    },
+    {
+     "code": 26,
+     "name": "Centrální dálkové - tepelné čerpadlo"
+    },
+    {
+     "code": 27,
+     "name": "Centrální dálkové - solární a fotovoltaické systémy"
+    },
+    {
+     "code": 28,
+     "name": "Centrální dálkové - kapalná paliva"
+    },
+    {
+     "code": 29,
+     "name": "Centrální dálkové - jiné"
+    },
+    {
+     "code": 31,
+     "name": "Lokální- zemní plyn"
+    },
+    {
+     "code": 32,
+     "name": "Lokální - uhlí"
+    },
+    {
+     "code": 33,
+     "name": "Lokální - dřevo a biomasa"
+    },
+    {
+     "code": 34,
+     "name": "Lokální - dřevěné rostlinné pelety"
+    },
+    {
+     "code": 35,
+     "name": "Lokální - elektřina"
+    },
+    {
+     "code": 36,
+     "name": "Lokální - tepelné čerpadlo"
+    },
+    {
+     "code": 37,
+     "name": "Lokální - solární a fotovoltaické systémy"
+    },
+    {
+     "code": 38,
+     "name": "Lokální - kapalná paliva"
+    },
+    {
+     "code": 39,
+     "name": "Lokální - jiné"
+    }
+   ]
+  },
+  "zpusobVyuzitiObjektu": {
+   "source": "https://services.cuzk.cz/sestavy/cis/CE_ZPUSOB_VYUZITI_OBJEKTU.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "průmyslový objekt",
+     "validTo": "11.12.2016"
+    },
+    {
+     "code": 2,
+     "name": "zemědělská usedlost"
+    },
+    {
+     "code": 3,
+     "name": "objekt k bydlení",
+     "validTo": "11.12.2016"
+    },
+    {
+     "code": 4,
+     "name": "objekt lesního hospodářství",
+     "validTo": "11.12.2016"
+    },
+    {
+     "code": 5,
+     "name": "objekt občanské vybavenosti",
+     "validTo": "11.12.2016"
+    },
+    {
+     "code": 6,
+     "name": "bytový dům"
+    },
+    {
+     "code": 7,
+     "name": "rodinný dům"
+    },
+    {
+     "code": 8,
+     "name": "stavba pro rodinnou rekreaci"
+    },
+    {
+     "code": 9,
+     "name": "stavba pro shromažďování většího počtu osob"
+    },
+    {
+     "code": 10,
+     "name": "stavba pro obchod"
+    },
+    {
+     "code": 11,
+     "name": "stavba ubytovacího zařízení"
+    },
+    {
+     "code": 12,
+     "name": "stavba pro výrobu a skladování"
+    },
+    {
+     "code": 13,
+     "name": "zemědělská stavba"
+    },
+    {
+     "code": 14,
+     "name": "stavba pro administrativu"
+    },
+    {
+     "code": 15,
+     "name": "stavba občanského vybavení"
+    },
+    {
+     "code": 16,
+     "name": "stavba technického vybavení"
+    },
+    {
+     "code": 17,
+     "name": "stavba pro dopravu"
+    },
+    {
+     "code": 18,
+     "name": "garáž"
+    },
+    {
+     "code": 19,
+     "name": "jiná stavba"
+    },
+    {
+     "code": 20,
+     "name": "víceúčelová stavba"
+    },
+    {
+     "code": 21,
+     "name": "skleník"
+    },
+    {
+     "code": 22,
+     "name": "přehrada",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 23,
+     "name": "hráz přehrazující vodní tok nebo údolí",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 24,
+     "name": "hráz k ochraně nemovitostí před zaplavením při povodni",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 25,
+     "name": "hráz ohrazující umělou vodní nádrž",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 26,
+     "name": "jez",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 27,
+     "name": "stavba k plaveb.účelům v korytech nebo na březích vod.toků",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 28,
+     "name": "stavba k využití vodní energie (vodní elektrárna)",
+     "validTo": "04.05.2016"
+    },
+    {
+     "code": 29,
+     "name": "stavba odkaliště",
+     "validTo": "24.05.2015"
+    },
+    {
+     "code": 30,
+     "name": "rozestavěné jednotky",
+     "validTo": "24.05.2015"
+    }
+   ]
+  },
+  "zpusobVyuzitiPozemku": {
+   "source": "https://services.cuzk.cz/sestavy/cis/SC_ZP_VYUZITI_POZ.zip",
+   "entries": [
+    {
+     "code": 1,
+     "name": "skleník, pařeniště"
+    },
+    {
+     "code": 2,
+     "name": "školka"
+    },
+    {
+     "code": 3,
+     "name": "plantáž dřevin"
+    },
+    {
+     "code": 4,
+     "name": "les jiný než hospodářský"
+    },
+    {
+     "code": 5,
+     "name": "lesní pozemek, na kterém je budova"
+    },
+    {
+     "code": 6,
+     "name": "rybník"
+    },
+    {
+     "code": 7,
+     "name": "koryto vodního toku přirozené nebo upravené"
+    },
+    {
+     "code": 8,
+     "name": "koryto vodního toku umělé"
+    },
+    {
+     "code": 9,
+     "name": "vodní nádrž přírodní"
+    },
+    {
+     "code": 10,
+     "name": "vodní nádrž umělá"
+    },
+    {
+     "code": 11,
+     "name": "zamokřená plocha"
+    },
+    {
+     "code": 12,
+     "name": "společný dvůr"
+    },
+    {
+     "code": 13,
+     "name": "zbořeniště"
+    },
+    {
+     "code": 14,
+     "name": "dráha"
+    },
+    {
+     "code": 15,
+     "name": "dálnice"
+    },
+    {
+     "code": 16,
+     "name": "silnice"
+    },
+    {
+     "code": 17,
+     "name": "ostatní komunikace"
+    },
+    {
+     "code": 18,
+     "name": "ostatní dopravní plocha"
+    },
+    {
+     "code": 19,
+     "name": "zeleň"
+    },
+    {
+     "code": 20,
+     "name": "sportoviště a rekreační plocha"
+    },
+    {
+     "code": 21,
+     "name": "pohřebiště"
+    },
+    {
+     "code": 22,
+     "name": "kulturní a osvětová plocha"
+    },
+    {
+     "code": 23,
+     "name": "manipulační plocha"
+    },
+    {
+     "code": 24,
+     "name": "dobývací prostor"
+    },
+    {
+     "code": 25,
+     "name": "skládka"
+    },
+    {
+     "code": 26,
+     "name": "jiná plocha"
+    },
+    {
+     "code": 27,
+     "name": "neplodná půda"
+    },
+    {
+     "code": 28,
+     "name": "vodní plocha, na které je budova"
+    },
+    {
+     "code": 29,
+     "name": "fotovoltaická elektrárna"
+    },
+    {
+     "code": 30,
+     "name": "mez, stráň"
+    }
+   ]
+  }
+ },
+ "fetchedAt": "2026-10-25"
+}
