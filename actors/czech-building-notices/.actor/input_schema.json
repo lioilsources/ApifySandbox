@@ -24,8 +24,8 @@
     "includeExpired": { "title": "Include expired notices", "type": "boolean", "default": false, "description": "Past their 'relevant until' date; only metadata and link are returned." },
     "inProtectedArea": { "title": "Only in protected areas", "type": "boolean", "default": false, "description": "Only notices with a parcel in a CHKO, national park, Natura 2000 site or nature reserve." },
     "resolveParcels": { "title": "Resolve parcels in RÚIAN", "type": "boolean", "default": true, "description": "Area, land type and WGS84 position of parcels named in the notice." },
-    "withContext": { "title": "Add protected and mining areas", "type": "boolean", "default": false },
-    "maxParcelLookups": { "title": "Max RÚIAN lookups", "type": "integer", "default": 1000, "minimum": 0 },
+    "withContext": { "title": "Add protected and mining areas", "type": "boolean", "default": false, "description": "CHKO and zone, national park, Natura 2000 and mining areas at up to 3 parcels per notice (extra RÚIAN requests)." },
+    "maxParcelLookups": { "title": "Max RÚIAN lookups", "type": "integer", "default": 1000, "minimum": 0, "description": "Upper bound of parcel lookups in RÚIAN for the whole run." },
     "limit": { "title": "Max notices", "type": "integer", "default": 500, "minimum": 1, "maximum": 10000, "description": "You pay per notice in the dataset." }
   }
 }
