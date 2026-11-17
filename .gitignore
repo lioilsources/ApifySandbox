@@ -7,3 +7,13 @@ storage/
 bin/
 .DS_Store
 leads/apify/
+# devconv:start
+*.p8
+*.p12
+*.jks
+key.properties
+.claude/settings.local.json
+CLAUDE.local.md
+*.test
+*.out
+# devconv:end
